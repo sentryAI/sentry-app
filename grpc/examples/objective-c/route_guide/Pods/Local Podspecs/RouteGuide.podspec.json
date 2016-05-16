@@ -1,0 +1,43 @@
+{
+  "name": "RouteGuide",
+  "version": "0.0.1",
+  "license": "New BSD",
+  "platforms": {
+    "ios": "9.3",
+    "osx": "10.9"
+  },
+  "prepare_command": "mkdir -p Pods/RouteGuide\nprotoc -I ../../protos --objc_out=Pods/RouteGuide --objcgrpc_out=Pods/RouteGuide ../../protos/inception_inference.proto",
+  "subspecs": [
+    {
+      "name": "Messages",
+      "source_files": [
+        "Pods/RouteGuide/*.pbobjc.{h,m}",
+        "Pods/RouteGuide/**/*.pbobjc.{h,m}"
+      ],
+      "header_mappings_dir": "Pods/RouteGuide",
+      "requires_arc": false,
+      "dependencies": {
+        "Protobuf": [
+          "~> 3.0.0-alpha-4"
+        ]
+      }
+    },
+    {
+      "name": "Services",
+      "source_files": [
+        "Pods/RouteGuide/*.pbrpc.{h,m}",
+        "Pods/RouteGuide/**/*.pbrpc.{h,m}"
+      ],
+      "header_mappings_dir": "Pods/RouteGuide",
+      "requires_arc": true,
+      "dependencies": {
+        "gRPC": [
+          "~> 0.12"
+        ],
+        "RouteGuide/Messages": [
+
+        ]
+      }
+    }
+  ]
+}

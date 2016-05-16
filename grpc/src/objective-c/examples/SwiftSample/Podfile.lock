@@ -1,0 +1,50 @@
+PODS:
+  - BoringSSL (2.0)
+  - gRPC (0.12.0):
+    - gRPC/C-Core (= 0.12.0)
+    - gRPC/GRPCClient (= 0.12.0)
+    - gRPC/ProtoRPC (= 0.12.0)
+    - gRPC/RxLibrary (= 0.12.0)
+  - gRPC/C-Core (0.12.0):
+    - BoringSSL (~> 2.0)
+  - gRPC/GRPCClient (0.12.0):
+    - gRPC/C-Core
+    - gRPC/RxLibrary
+  - gRPC/ProtoRPC (0.12.0):
+    - gRPC/GRPCClient
+    - gRPC/RxLibrary
+    - Protobuf (~> 3.0.0-alpha-4)
+  - gRPC/RxLibrary (0.12.0)
+  - Protobuf (3.0.0-alpha-4.1)
+  - RemoteTest (0.0.1):
+    - RemoteTest/Messages (= 0.0.1)
+    - RemoteTest/Services (= 0.0.1)
+  - RemoteTest/Messages (0.0.1):
+    - Protobuf (~> 3.0.0-alpha-4)
+  - RemoteTest/Services (0.0.1):
+    - gRPC (~> 0.12)
+    - RemoteTest/Messages
+
+DEPENDENCIES:
+  - BoringSSL (from `../..`)
+  - gRPC (from `../../../..`)
+  - Protobuf (from `../../../../third_party/protobuf`)
+  - RemoteTest (from `../RemoteTestClient`)
+
+EXTERNAL SOURCES:
+  BoringSSL:
+    :podspec: "../.."
+  gRPC:
+    :path: "../../../.."
+  Protobuf:
+    :path: "../../../../third_party/protobuf"
+  RemoteTest:
+    :path: "../RemoteTestClient"
+
+SPEC CHECKSUMS:
+  BoringSSL: 961e639a605d2b5b08cc3371e526cee7c12f0294
+  gRPC: 67247e1b35d288464bcbc39ae865d712367c8395
+  Protobuf: 69f9654046c9a7787c5e07d4e5bc7c567a88ff12
+  RemoteTest: 2fe71d369dc2d250bd7e97b94299ff8da4f71713
+
+COCOAPODS: 0.39.0

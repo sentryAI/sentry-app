@@ -1,0 +1,50 @@
+PODS:
+  - BoringSSL (2.0)
+  - gRPC (0.12.0):
+    - gRPC/C-Core (= 0.12.0)
+    - gRPC/GRPCClient (= 0.12.0)
+    - gRPC/ProtoRPC (= 0.12.0)
+    - gRPC/RxLibrary (= 0.12.0)
+  - gRPC/C-Core (0.12.0):
+    - BoringSSL (~> 2.0)
+  - gRPC/GRPCClient (0.12.0):
+    - gRPC/C-Core
+    - gRPC/RxLibrary
+  - gRPC/ProtoRPC (0.12.0):
+    - gRPC/GRPCClient
+    - gRPC/RxLibrary
+    - Protobuf (~> 3.0.0-alpha-4)
+  - gRPC/RxLibrary (0.12.0)
+  - HelloWorld (0.0.1):
+    - HelloWorld/Messages (= 0.0.1)
+    - HelloWorld/Services (= 0.0.1)
+  - HelloWorld/Messages (0.0.1):
+    - Protobuf (~> 3.0.0-alpha-4)
+  - HelloWorld/Services (0.0.1):
+    - gRPC (~> 0.12)
+    - HelloWorld/Messages
+  - Protobuf (3.0.0-alpha-4.1)
+
+DEPENDENCIES:
+  - BoringSSL (from `../../../src/objective-c`)
+  - gRPC (from `../../..`)
+  - HelloWorld (from `.`)
+  - Protobuf (from `../../../third_party/protobuf`)
+
+EXTERNAL SOURCES:
+  BoringSSL:
+    :podspec: "../../../src/objective-c"
+  gRPC:
+    :path: "../../.."
+  HelloWorld:
+    :path: "."
+  Protobuf:
+    :path: "../../../third_party/protobuf"
+
+SPEC CHECKSUMS:
+  BoringSSL: 961e639a605d2b5b08cc3371e526cee7c12f0294
+  gRPC: 67247e1b35d288464bcbc39ae865d712367c8395
+  HelloWorld: 098dc4c19eaa3c7518385a279f553c48bd8a4ce7
+  Protobuf: 69f9654046c9a7787c5e07d4e5bc7c567a88ff12
+
+COCOAPODS: 0.39.0

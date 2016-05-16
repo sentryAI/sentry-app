@@ -1,0 +1,43 @@
+{
+  "name": "HelloWorld",
+  "version": "0.0.1",
+  "license": "New BSD",
+  "platforms": {
+    "ios": "7.1",
+    "osx": "10.9"
+  },
+  "prepare_command": "mkdir -p Pods/HelloWorld\nprotoc -I ../../protos --objc_out=Pods/HelloWorld --objcgrpc_out=Pods/HelloWorld ../../protos/helloworld.proto",
+  "subspecs": [
+    {
+      "name": "Messages",
+      "source_files": [
+        "Pods/HelloWorld/*.pbobjc.{h,m}",
+        "Pods/HelloWorld/**/*.pbobjc.{h,m}"
+      ],
+      "header_mappings_dir": "Pods/HelloWorld",
+      "requires_arc": false,
+      "dependencies": {
+        "Protobuf": [
+          "~> 3.0.0-alpha-4"
+        ]
+      }
+    },
+    {
+      "name": "Services",
+      "source_files": [
+        "Pods/HelloWorld/*.pbrpc.{h,m}",
+        "Pods/HelloWorld/**/*.pbrpc.{h,m}"
+      ],
+      "header_mappings_dir": "Pods/HelloWorld",
+      "requires_arc": true,
+      "dependencies": {
+        "gRPC": [
+          "~> 0.12"
+        ],
+        "HelloWorld/Messages": [
+
+        ]
+      }
+    }
+  ]
+}
