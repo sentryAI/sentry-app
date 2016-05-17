@@ -34,13 +34,13 @@ static NSString *const kHostAddress = @"104.197.50.236:9000";
 
 - (void)viewDidAppear:(BOOL)animated {
     [self turnTorchOn:true];
-    // Create a step
+    // Instruction step
     ORKInstructionStep *instructionStep =
     [[ORKInstructionStep alloc] initWithIdentifier:@"intro"];
     instructionStep.title = @"Welcome to the Sentry ResearchKit classifier app.";
     instructionStep.detailText = @"To record a lesion, please have the patient identifier number ready.";
     
-    // Gather patient identifier number
+    // Patient identifier number
     ORKNumericAnswerFormat *identifierFormat =
     [ORKNumericAnswerFormat integerAnswerFormatWithUnit:@""];
     identifierFormat.minimum = @(0);
@@ -48,28 +48,6 @@ static NSString *const kHostAddress = @"104.197.50.236:9000";
     ORKQuestionStep *patientIdentifierStep = [ORKQuestionStep questionStepWithIdentifier:@"patientIdentifierStep"
                                                                                    title:@"Enter the patient MRN:"
                                                                                   answer:identifierFormat];
-    
-    // Capture the clinical impression
-    ORKFormStep *clinicalImpressionForm = [[ORKFormStep alloc] initWithIdentifier:@"clinicalImpressionFormstep"
-                                                                            title:@"Lesion Clinical Impression" text:@"Record your primary impression of this lesion. Keep answers concise."];
-    NSMutableArray *clinicalImpressionFormItems = [NSMutableArray new];
-    [clinicalImpressionFormItems addObject:[[ORKFormItem alloc] initWithSectionTitle:@"Top 3 Potential Diagnoses"]];
-    ORKTextAnswerFormat *impressionAnswerFormat = [ORKTextAnswerFormat textAnswerFormatWithMaximumLength:@(150)];
-    
-    // Top 3 clinical impressions
-    ORKFormItem *firstImpression = [[ORKFormItem alloc] initWithIdentifier:@"firstImpression" text:@"First impression?" answerFormat:impressionAnswerFormat];
-    firstImpression.placeholder = @"Example: Melanoma";
-    
-    ORKFormItem *secondImpression = [[ORKFormItem alloc] initWithIdentifier:@"secondImpression" text:@"Second impression?" answerFormat:impressionAnswerFormat];
-    secondImpression.placeholder = @"Example: Dermal benign lesion";
-    
-    ORKFormItem *thirdImpression = [[ORKFormItem alloc] initWithIdentifier:@"thirdImpression" text:@"Third impression?" answerFormat:impressionAnswerFormat];
-    thirdImpression.placeholder = @"Example: Dermal benign lesion";
-    
-    [clinicalImpressionFormItems addObjectsFromArray:@[firstImpression, secondImpression, thirdImpression]];
-    
-    clinicalImpressionForm.formItems = clinicalImpressionFormItems;
-    clinicalImpressionForm.optional = false;
     
     // Patient skin lesion predictive factors
     ORKFormStep *patientFactorsForm = [[ORKFormStep alloc] initWithIdentifier:@"patientFactorsFormstep"
@@ -133,6 +111,34 @@ static NSString *const kHostAddress = @"104.197.50.236:9000";
     
     patientFactorsForm.formItems = patientFactorFormItems;
     
+    
+    // Primary clinical impression form
+    ORKFormStep *clinicalImpressionForm = [[ORKFormStep alloc] initWithIdentifier:@"clinicalImpressionFormstep"
+                                                                            title:@"Lesion Clinical Impression" text:@"Record your primary impression of this lesion. Please be concise but as specific as possible."];
+    NSMutableArray *clinicalImpressionFormItems = [NSMutableArray new];
+    // Common name answer format
+    NSArray<NSString *> *clinicalImpressionLabels = @[@"Abcess",@"Acne",@"Allergic contact dermatitis",@"Atopic dermatitis",@"Basal Cell Carcinoma",@"Benign Lesion",@"Cellulitis",@"Encounter",@"Epdermolysis bulls",@"Erythema multiforme",@"Furuncle Foliculitis",@"Herpes zoster",@"Irritant contact dermatitis ",@"Lichen planus",@"Lipoma",@"Lupus ervthematosus",@"Malignant NOS",@"Mass/lump",@"Melanoma",@"Melanoma in-situ",@"Neoplasm uncertain behavior",@"Nevus",@"Pruritus ",@"Psoriasis",@"Seborrheic dermatitis",@"Squamous Cell Carcinoma",@"Squamous Cell Carcinoma in-situ",@"Staphylococcal aureus",@"Urticaria", @"Other not listed"];
+    NSMutableArray *clinicalImpressionTextChoices = [NSMutableArray new];
+    for (int i=0; i < [clinicalImpressionLabels count]; i++) {
+        [clinicalImpressionTextChoices addObject:[[ORKTextChoice alloc] initWithText:clinicalImpressionLabels[i] detailText:nil value:@(i) exclusive:YES]];
+    }
+    ORKValuePickerAnswerFormat *clinicalImpressionPickerFormat = [[ORKValuePickerAnswerFormat alloc] initWithTextChoices:clinicalImpressionTextChoices];
+    ORKFormItem *pickerImpression = [[ORKFormItem alloc] initWithIdentifier:@"pickerImpression" text:@"Choose the closest diagnosis." answerFormat:clinicalImpressionPickerFormat];
+    
+    // ICD-10 Clinical Impression Format
+    ORKTextAnswerFormat *icdAnswerFormat = [ORKTextAnswerFormat textAnswerFormatWithValidationRegex:@"^[A-Z][0-9][A-Z0-9]\.[A-Z0-9]{1,3}$" invalidMessage:@"Please use proper ICD Answer format. Example: C44.42, D03.4, H00.033"];
+    ORKFormItem *icdImpression = [[ORKFormItem alloc] initWithIdentifier:@"icdImpression" text:@"Please enter the ICD-10 code for your clinical impression." answerFormat:icdAnswerFormat];
+    icdImpression.placeholder = @"Examples: C44.42, D03.4, H00.033";
+    
+    // Freehand clinical impression (show on selecting 'other')
+    ORKTextAnswerFormat *freehandImpressionAnswerFormat = [ORKTextAnswerFormat textAnswerFormatWithMaximumLength:@(150)];
+    ORKFormItem *otherImpression = [[ORKFormItem alloc] initWithIdentifier:@"freehandImpression" text:@"If your clinical impression is not captured above, enter a concise description here?" answerFormat:freehandImpressionAnswerFormat];
+    otherImpression.placeholder = @"Example: Melanoma";
+    
+    [clinicalImpressionFormItems addObjectsFromArray:@[pickerImpression, icdImpression, otherImpression]];
+    
+    clinicalImpressionForm.formItems = clinicalImpressionFormItems;
+    clinicalImpressionForm.optional = false;
     
     
     // Patient skin Fitzpatrick type
