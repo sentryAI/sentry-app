@@ -34,6 +34,28 @@ static NSString *const kHostAddress = @"104.197.50.236:9000";
 
 - (void)viewDidAppear:(BOOL)animated {
     [self turnTorchOn:true];
+    /** PATIENT CONSENT DOCUMENT **/
+    ORKConsentDocument *consent = [[ORKConsentDocument alloc] init];
+    consent.title = @"Skin Lesion Consent";
+    consent.signaturePageTitle = @"Patient Consent Signature";
+    
+    // Document sections here
+    ORKConsentSection *section1 =
+    [[ORKConsentSection alloc] initWithType:ORKConsentSectionTypeDataGathering];
+    
+    // Collect document titles
+    [consent addSignature:[ORKConsentSignature signatureForPersonWithTitle:nil
+                                                          dateFormatString:nil
+                                                        identifier:@"consentDocumentSignature"]];
+    
+    ORKConsentReviewStep *reviewStep =
+    [[ORKConsentReviewStep alloc] initWithIdentifier:@"consentReviewStepIdentifier"
+                                           signature:consent.signatures[0]
+                                          inDocument:consent];
+    reviewStep.text = @"By signing this, you agree to release your information for the Sentry study.";
+    reviewStep.reasonForConsent = @"Here is the reason for consent";
+    
+    /** Main task **/
     // Instruction step
     ORKInstructionStep *instructionStep =
     [[ORKInstructionStep alloc] initWithIdentifier:@"intro"];
@@ -165,7 +187,7 @@ static NSString *const kHostAddress = @"104.197.50.236:9000";
     
     // Add all steps to task
     ORKOrderedTask *task =
-    [[ORKOrderedTask alloc] initWithIdentifier:@"task" steps:@[instructionStep,patientIdentifierStep, patientFactorsForm, fitzpatrickStep, clinicalImpressionForm,  skinLesionInstructionStep, skinLesionCaptureStep]];
+    [[ORKOrderedTask alloc] initWithIdentifier:@"task" steps:@[instructionStep, reviewStep, patientIdentifierStep, patientFactorsForm, fitzpatrickStep, clinicalImpressionForm,  skinLesionInstructionStep, skinLesionCaptureStep]];
     
     ORKTaskViewController *taskViewController =
     [[ORKTaskViewController alloc] initWithTask:task taskRunUUID:nil];
