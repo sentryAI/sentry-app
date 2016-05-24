@@ -12,10 +12,10 @@
 #import <AVFoundation/AVFoundation.h>
 
 // Define the service host address
-static NSString *const kHostAddress = @"104.197.50.236:9000";
+//static NSString *const kHostAddress = @"104.197.50.236:9000";
 //static NSString *const kHostAddress = @"130.211.115.226:9000"; // image classifier
 
-//static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
+static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
 @interface ViewController ()
 
 @end
