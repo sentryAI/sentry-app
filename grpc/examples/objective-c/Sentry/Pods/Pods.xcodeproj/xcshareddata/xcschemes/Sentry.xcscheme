@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'AF5CFE0A3A397F177CC33EFA'
+               BlueprintIdentifier = 'FF3C0464E59CA12290EA8EAE'
                BlueprintName = 'Sentry'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libSentry.a'>
