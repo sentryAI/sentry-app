@@ -5,7 +5,7 @@ target 'Sentry' do
   pod 'Protobuf', :path => "../../../third_party/protobuf"
   pod 'BoringSSL', :podspec => "../../../src/objective-c"
   pod 'gRPC', :path => "../../.."
-  pod 'ResearchKit', '~> 1.0'
+  pod 'ResearchKit', :git => 'https://github.com/CatherineWong/ResearchKit'
   # Depend on the generated RouteGuide library.
   pod 'Sentry', :path => '.'
 end
