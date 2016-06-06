@@ -30,10 +30,16 @@ static GPBFileDescriptor *InceptionInferenceRoot_FileDescriptor(void) {
 @implementation InceptionRequest
 
 @dynamic jpegEncoded;
+@dynamic patientId;
+@dynamic clinicalImpression;
+@dynamic additionalFeaturesString;
 
 typedef struct InceptionRequest__storage_ {
   uint32_t _has_storage_[1];
+  int32_t patientId;
   NSData *jpegEncoded;
+  NSString *clinicalImpression;
+  NSString *additionalFeaturesString;
 } InceptionRequest__storage_;
 
 // This method is threadsafe because it is initially called
@@ -50,6 +56,39 @@ typedef struct InceptionRequest__storage_ {
         .dataType = GPBDataTypeBytes,
         .offset = offsetof(InceptionRequest__storage_, jpegEncoded),
         .defaultValue.valueData = nil,
+        .dataTypeSpecific.className = NULL,
+        .fieldOptions = NULL,
+      },
+      {
+        .name = "patientId",
+        .number = InceptionRequest_FieldNumber_PatientId,
+        .hasIndex = 1,
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeInt32,
+        .offset = offsetof(InceptionRequest__storage_, patientId),
+        .defaultValue.valueInt32 = 0,
+        .dataTypeSpecific.className = NULL,
+        .fieldOptions = NULL,
+      },
+      {
+        .name = "clinicalImpression",
+        .number = InceptionRequest_FieldNumber_ClinicalImpression,
+        .hasIndex = 2,
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeString,
+        .offset = offsetof(InceptionRequest__storage_, clinicalImpression),
+        .defaultValue.valueString = nil,
+        .dataTypeSpecific.className = NULL,
+        .fieldOptions = NULL,
+      },
+      {
+        .name = "additionalFeaturesString",
+        .number = InceptionRequest_FieldNumber_AdditionalFeaturesString,
+        .hasIndex = 3,
+        .flags = GPBFieldOptional,
+        .dataType = GPBDataTypeString,
+        .offset = offsetof(InceptionRequest__storage_, additionalFeaturesString),
+        .defaultValue.valueString = nil,
         .dataTypeSpecific.className = NULL,
         .fieldOptions = NULL,
       },

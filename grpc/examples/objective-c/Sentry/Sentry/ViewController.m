@@ -135,14 +135,14 @@ static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
     
     
     // Primary clinical impression form
-    ORKFormStep *clinicalImpressionForm = [[ORKFormStep alloc] initWithIdentifier:@"clinicalImpressionFormstep"
+    ORKFormStep *clinicalImpressionForm = [[ORKFormStep alloc] initWithIdentifier:@"clinicalImpressionFormStep"
                                                                             title:@"Lesion Clinical Impression" text:@"Record your primary impression of this lesion. Please be concise but as specific as possible."];
     NSMutableArray *clinicalImpressionFormItems = [NSMutableArray new];
     // Common name answer format
     NSArray<NSString *> *clinicalImpressionLabels = @[@"Abcess",@"Acne",@"Allergic contact dermatitis",@"Atopic dermatitis",@"Basal Cell Carcinoma",@"Benign Lesion",@"Cellulitis",@"Encounter",@"Epdermolysis bulls",@"Erythema multiforme",@"Furuncle Foliculitis",@"Herpes zoster",@"Irritant contact dermatitis ",@"Lichen planus",@"Lipoma",@"Lupus ervthematosus",@"Malignant NOS",@"Mass/lump",@"Melanoma",@"Melanoma in-situ",@"Neoplasm uncertain behavior",@"Nevus",@"Pruritus ",@"Psoriasis",@"Seborrheic dermatitis",@"Squamous Cell Carcinoma",@"Squamous Cell Carcinoma in-situ",@"Staphylococcal aureus",@"Urticaria", @"Other not listed"];
     NSMutableArray *clinicalImpressionTextChoices = [NSMutableArray new];
     for (int i=0; i < [clinicalImpressionLabels count]; i++) {
-        [clinicalImpressionTextChoices addObject:[[ORKTextChoice alloc] initWithText:clinicalImpressionLabels[i] detailText:nil value:@(i) exclusive:YES]];
+        [clinicalImpressionTextChoices addObject:[[ORKTextChoice alloc] initWithText:clinicalImpressionLabels[i] detailText:nil value:clinicalImpressionLabels[i] exclusive:YES]];
     }
     ORKValuePickerAnswerFormat *clinicalImpressionPickerFormat = [[ORKValuePickerAnswerFormat alloc] initWithTextChoices:clinicalImpressionTextChoices];
     ORKFormItem *pickerImpression = [[ORKFormItem alloc] initWithIdentifier:@"pickerImpression" text:@"Choose the closest diagnosis." answerFormat:clinicalImpressionPickerFormat];
@@ -202,21 +202,43 @@ static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
     [self presentViewController:taskViewController animated:YES completion:nil];
 }
 
+
 - (void)taskViewController:(ORKTaskViewController *)taskViewController
        didFinishWithReason:(ORKTaskViewControllerFinishReason)reason
                      error:(NSError *)error {
     
     ORKTaskResult *taskResult = [taskViewController result];
     
+    /** Extract the data from the task result **/
     NSLog(@"%@", taskResult);
     NSData* imageData = nil;
+    NSString* clinicalImpressionString = nil;
+    NSNumber* patientIdentifier = nil;
     for(ORKResult* stepResult in taskResult.results) {
-        if ([stepResult.identifier isEqualToString:@"imageCaptureStep"]) {
+        NSString* stepResultIdentifier = stepResult.identifier;
+        if ([stepResultIdentifier isEqualToString:@"imageCaptureStep"]) {
+            // Extract the image data from the task result
             for (ORKResult* imageStepResult in((ORKStepResult*)stepResult).results){
                 if([imageStepResult isKindOfClass:[ORKFileResult class]]) {
                     ORKFileResult* fileResult = (ORKFileResult*) imageStepResult;
                     NSURL* fileURL = fileResult.fileURL;
                     imageData = [[NSData alloc] initWithContentsOfURL:fileURL];
+                }
+            }
+        } else if ([stepResultIdentifier isEqualToString:@"patientIdentifierStep"]) {
+            // Extract the patient identifier
+            for (ORKResult* identifierResult in((ORKStepResult*)stepResult).results){
+                if([identifierResult isKindOfClass:[ORKNumericQuestionResult class]]) {
+                    ORKNumericQuestionResult* patientIdResult = (ORKNumericQuestionResult*) identifierResult;
+                    patientIdentifier = patientIdResult.numericAnswer;
+                }
+            }
+        } else if ([stepResultIdentifier isEqualToString:@"clinicalImpressionFormStep"]) {
+            // Extract the clinical impression from the picker
+            for (ORKResult* impressionResult in((ORKStepResult*)stepResult).results){
+                if([impressionResult isKindOfClass:[ORKChoiceQuestionResult class]]) {
+                    ORKChoiceQuestionResult* impressionChoiceResult = (ORKChoiceQuestionResult*) impressionResult ;
+                    clinicalImpressionString = impressionChoiceResult.choiceAnswers[0];
                 }
             }
         }
@@ -234,6 +256,10 @@ static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
         
         InceptionRequest *inceptionRequest = [InceptionRequest message];
         inceptionRequest.jpegEncoded = imageData;
+        inceptionRequest.patientId = [patientIdentifier intValue];
+        inceptionRequest.clinicalImpression = clinicalImpressionString;
+        inceptionRequest.additionalFeaturesString = @""; // TODO: add additional features
+        
         
         [inceptionService classifyWithRequest:inceptionRequest handler:
          ^(InceptionResponse *response, NSError *error) {
@@ -241,10 +267,10 @@ static NSString *const kHostAddress = @"mjolnir-collect.stanford.edu:8000";
              if (response) {
                  NSLog(@"%@", @"Response");
                  NSLog(@"%@", response);
-                 NSString* classLabel = labelArray[[response.classesArray valueAtIndex:0]];
-                 NSLog(@"%@", classLabel);
+                 //NSString* classLabel = labelArray[[response.classesArray valueAtIndex:0]]; // Uncomment for skin classfier
+                
                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Top skin result!"
-                                                        message:classLabel
+                                                        message: [NSString stringWithFormat:@"%d",[response.classesArray valueAtIndex:0]] // Change to classLabel when using skin classifier
                                                         delegate:self
                                                         cancelButtonTitle:@"Whoop de doo!"
                                                        otherButtonTitles:nil];

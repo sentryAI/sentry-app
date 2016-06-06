@@ -28,12 +28,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef GPB_ENUM(InceptionRequest_FieldNumber) {
   InceptionRequest_FieldNumber_JpegEncoded = 1,
+  InceptionRequest_FieldNumber_PatientId = 2,
+  InceptionRequest_FieldNumber_ClinicalImpression = 3,
+  InceptionRequest_FieldNumber_AdditionalFeaturesString = 4,
 };
 
 @interface InceptionRequest : GPBMessage
 
 // JPEG encoded stream of the image to be classified.
 @property(nonatomic, readwrite, copy, null_resettable) NSData *jpegEncoded;
+
+// The patient MRN
+@property(nonatomic, readwrite) int32_t patientId;
+
+// The physician clinical impression 
+@property(nonatomic, readwrite, copy, null_resettable) NSString *clinicalImpression;
+
+// A comma separated string of additional features from the patient questionnaire
+@property(nonatomic, readwrite, copy, null_resettable) NSString *additionalFeaturesString;
 
 @end
 
