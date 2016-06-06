@@ -7,6 +7,15 @@ package tensorflow.serving;
 message InceptionRequest {
   // JPEG encoded stream of the image to be classified.
   bytes jpeg_encoded = 1;
+
+  // The patient MRN
+  int32 patient_id = 2;
+
+  // The physician clinical impression 
+  string clinical_impression = 3;
+
+  // A comma separated string of additional features from the patient questionnaire
+  string additional_features_string = 4;
 };
 
 message InceptionResponse {
